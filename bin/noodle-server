@@ -8,14 +8,16 @@ var connect  = require('connect'),
     fs       = require('fs'),
     limiter  = require('connect-ratelimit'),
     noodlemw = require('../lib/noodle-middleware'),
+    cors     = require('cors'),
     version  = getVersion(),
     limits   = getConfig().rateLimit,
-    port     = process.argv[2] || 8888,
+    port     = process.argv[2] || process.env.PORT || 3000,
     app;
 
     limits.end = false;
 
     app      = connect()
+              .use(cors())
               .use(function (req, res, next) {
                 if (url.parse(req.url).pathname === '/version') {
                   res.writeHead(200, {
@@ -65,3 +67,4 @@ function getVersion () {
   var path = require('path').resolve(__dirname, '../package.json');
   return JSON.parse(fs.readFileSync(path).toString()).version;
 }
+
